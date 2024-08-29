@@ -1,0 +1,156 @@
+ <!-- Used w3 schools and ChatGPt for simple questions and as reference -->
+
+<html>
+     <head>
+          <link rel="stylesheet" href="tueats.css">
+          <title>TUEats</title>
+     </head>
+     <body>
+          <img src="Towson Logo.png">
+          <header>Welcome to TUEats</header>
+          <form id="form" action="tueats_completed.html" method="GET">
+               <label for="username">Username</label>
+               <input type="text" id="username" name="username"> 
+               <div id="usernameError"></div>
+           
+               <label for="email">Email</label>
+               <input type="email" id="email" name="email"> 
+           
+               <label for="referral">Referral Code</label>
+               <input type="text" id="referral" name="referral"> 
+               <div id="referralError"></div>
+           
+               <label for="pWord">Password</label>
+               <input type="password" id="pWord" name="password"> 
+           
+               <label for="vPWord">Verify Password</label>
+               <input type="password" id="vPWord" name="vPassword">
+               <div id="passwordError"></div>
+           
+               <input type="checkbox" id="cBox" name="newsletter">
+               <label for="cBox">Sign up for our newsletter?</label>
+               
+               <!-- Used ChatGPT to help diagnose a problem with data not being passed
+                for the get request. I had named the button id to be submit and 
+                apparrently thats a nono -->
+               <button id="sub" type="submit">Submit</button>
+               
+               
+          </form>
+
+          <table class="table">
+               <caption>Menu is subject to change, please visit our
+                    main site for more information at 
+                    <a target="_blank" href="https://towson.edu">Towson University</a>
+               </caption>
+               <tr>
+                    <th>""</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Calories</th>
+               </tr>
+               <tr>
+                    <td rowspan="1">item 1</td>
+                    <td rowspan="1"> Burger</td>
+                    <td rowspan="1">$8</td>
+                    <td rowspan="1">550</td>
+               </tr>
+               <tr>
+                    <td rowspan="1">item 2</td>
+                    <td rowspan="1">Mozzerella Sticks</td>
+                    <td rowspan="1">$7</td>
+                    <!-- This will make it appear in the middle of the rows, so I think thats what you want? -->
+                    <td rowspan="2">400</td>
+               </tr>
+               <tr>
+                    <td rowspan="1">item 3</td>
+                    <td rowspan="1">Fries</td>
+                    <td rowspan="1">$4</td>
+                    
+                    <!-- <td>400</td> -->
+               </tr>
+
+
+          </table>
+          <script>
+               const pField = document.getElementById('pWord')
+               const vPField = document.getElementById('vPWord')
+               const username = document.getElementById('username')
+               const referral = document.getElementById('referral')
+
+               const submitButton = document.getElementById('sub')
+
+               const passwordError = document.getElementById('passwordError')
+               const usernameError = document.getElementById('usernameError')
+               const referralError = document.getElementById('referralError')
+               
+               const invalidReferrals = ['tucis', 'bogo', 'eatgood']
+
+               var pass = ''
+               var vPass = ''
+               var ref = ''
+               var uName = '';
+               var validReferral = false;
+
+               var passwordsMatch = pass == vPass
+
+               pField.addEventListener('input', ()=>{
+                    pass = pField.value;
+                    passwordsMatch = pass == vPass; 
+                    if(passwordsMatch){
+                         passwordError.innerText = "";
+                         submitButton.disabled = false
+                    }else{
+                         passwordError.innerText = "Ensure the passwords match";
+                         submitButton.disabled = true
+         
+                    }
+               })
+               vPField.addEventListener('input', ()=>{
+                    vPass = vPField.value; 
+                    passwordsMatch = pass == vPass; 
+                    if(passwordsMatch){
+                         passwordError.innerText = "";
+                         submitButton.disabled = false
+                    }else{
+                         passwordError.innerText = "Ensure the passwords match";
+                         submitButton.disabled = true
+         
+                    }
+               })
+               referral.addEventListener('input', ()=>{
+                    ref = referral.value
+                    if(invalidReferrals.includes(ref.toLocaleLowerCase())){
+                         referralError.innerText = 'This referral code is invalid'
+                         submitButton.disabled = true
+                    }else{
+                         referralError.innerText = ''
+                         submitButton.disabled = false
+                         
+                    }
+               })
+
+               username.addEventListener('input', ()=>{
+                    uName = username.value
+                    if(uName.length < 6){
+                         usernameError.innerText = 'Username must be at least than 6 characters long'
+                         submitButton.disabled = true
+                    }else if(uName.length > 24){
+                         usernameError.innerText = 'Username must be less than 24 characters long'
+                         submitButton.disabled = true
+
+                    }else{
+                         usernameError.innerText = ''
+                         submitButton.disabled = false
+                    }
+               })
+
+
+          
+          </script>
+
+     </body>
+
+
+
+</html>

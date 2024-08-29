@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Second HTML File</title>
+</head>
+<body>
+    <h1>Data Received from the First HTML File</h1>
+    
+   
+    <div id="displayData"></div>
+    
+    <script>
+        
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+               
+            return params
+        }
+
+
+
+        function displayData() {
+          var params = getQueryParams()
+          
+          //Used chatgpt, created one and told it to contunie the pattern
+          const username = params.get('username') ?? "N/A"
+          const email = params.get('email') ?? "N/A"
+          const referral = params.get('referral') ?? "N/A"
+          const password = params.get('password') ?? ""
+          const vPassword = params.get('vPassword') ?? ""
+          const signup = params.get('newsLetter') ?? "off"
+  
+          
+          const userNameElement = document.createElement("div");
+          userNameElement.innerText = `Username: ${username}`;
+
+          const topElement = document.createElement('div')
+          topElement.innerText = `Hello ${username}`
+
+          const emailElement = document.createElement("div");
+          emailElement.innerText = `Email: ${email}`;
+
+          const referralElement = document.createElement("div");
+          referralElement.innerText = `Referral code: ${referral} (free meal)`;
+
+          const passwordElement = document.createElement("div");
+          passwordElement.innerText = `Password: ${password}`;
+
+          const vPasswordElement = document.createElement("div");
+          vPasswordElement.innerText = `Verify Password: ${vPassword}`;
+
+          const signupElement = document.createElement("div");
+          signupElement.innerText = `Newsletter Signup: ${signup}`;
+
+          const parentElement = document.getElementById('displayData');
+          parentElement.appendChild(topElement);
+          parentElement.appendChild(userNameElement);
+          parentElement.appendChild(emailElement);
+          parentElement.appendChild(referralElement);
+
+          parentElement.appendChild(passwordElement);
+          parentElement.appendChild(vPasswordElement);
+          parentElement.appendChild(signupElement);
+
+
+
+        }
+
+
+        displayData();
+    </script>
+</body>
+</html>

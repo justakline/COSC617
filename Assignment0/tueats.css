@@ -1,0 +1,35 @@
+
+/* Used w3 schools and ChatGPt for simple questions and as reference */
+
+body{
+     width:100%;
+     --gold :rgb(255, 187,0); 
+}
+
+img{
+     width: 300px;
+}
+header{
+     color:var(--gold);
+}
+
+
+body table th{
+     font-weight: bold;
+  
+}
+
+.table{
+     width: 75%;
+     border: 1px solid black;
+     text-align: center;
+     background-color: grey;
+}
+#passwordError, #referralError, #usernameError{
+     color:red;
+     font-size: x-large;
+}
+
+a:hover{
+     color: var(--gold)
+}
