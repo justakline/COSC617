@@ -6,6 +6,8 @@ if(process.argv.length > 3){
     return
 }
 
+
+
 if(process.argv.length < 3){
     console.error("Not enough arguements, please provide location of text file")
     return
@@ -24,16 +26,18 @@ fs.readFile(fileLocation, (err, data) => {
     const lines = data.toString().split('\n')
     
     var count =0
+
+    // Split into lines, then into words, then make sure the words are valid
     for(line of lines){
         words = line.split(' ')
         for (word of words){
-            if (validWords.includes(word) ){
+            if (validWords.includes(word.toLowerCase().trim()) ){
                 count += 1
             }
         }
     }
     
-    console.log("The total number of occurences  is " + count)
+    console.log("The total number of occurences is " + count)
 
 
 

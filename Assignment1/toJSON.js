@@ -23,7 +23,10 @@ fs.readFile(fileLocation, (err, data) => {
         console.error("there is no file named "+ fileLocation)
         return
     }
-    const lines = data.toString().split("\n")
+
+    // From your video, I understand it to mean that we should not touch /r if its there... if you meant we should take it out, then add .split("\r")
+    const lines = data.toString().split("\n").filter(s => s.length != 0)
+    console.log(lines)
     
     if(lines.length < 3){
         console.error("Not enough lines in the file")
