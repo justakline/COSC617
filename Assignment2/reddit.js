@@ -1,5 +1,4 @@
 const fs = require('fs')
-const { set } = require('lodash')
 const lo = require('lodash')
 
 // Used chat to explain all of the lo functions in a sussinct way
