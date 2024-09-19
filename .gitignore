@@ -1,2 +1,3 @@
-/Assignment2/node_modules
-# /Assignment2/package.json
+**/node_modules
+**package-lock.json
+**package.json
