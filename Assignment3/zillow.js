@@ -13,11 +13,11 @@ var houses =  [
 ];
 // Root 
 app.get('/', (request, response) => {
-    response.send('Root endpoint')
+    response.status(200).send('Root endpoint')
 })
 
-// 
-app.get('/v1/zillow/zestimate/', (request, response) => {
+
+app.get('/v1/zillow/zestimate', (request, response) => {
     // After much testing, I found out that you can send in
     // Multiple paramters named the same thing
     // i.e you can pass in 2 sqft and it will only take the first 
@@ -31,7 +31,7 @@ app.get('/v1/zillow/zestimate/', (request, response) => {
   
     var isValidKeys = validateKeys(keys, expectedKeys);
     if(!isValidKeys){
-        response.sendStatus(400)
+        response.sendStatus(404)
         console.log("Failed at the keys")
         return
     }
@@ -39,7 +39,7 @@ app.get('/v1/zillow/zestimate/', (request, response) => {
     // Check if all the values are integers
     var isAllValidInts = allValidIntegers(values)
     if(!isAllValidInts){
-        response.sendStatus(400)
+        response.sendStatus(404)
         console.log("Failed at the ints")
         return   
     }
@@ -47,10 +47,10 @@ app.get('/v1/zillow/zestimate/', (request, response) => {
     // https://www.geeksforgeeks.org/lodash-_-reduce-method/
     values = lo.map(values, v => {return lo.parseInt(v);})
     zestimate = lo.reduce(values, (total, v) => {return total *= v} ) * 10
-    response.send({"zestimate" : zestimate})
+    response.status(200).send({"zestimate" : zestimate})
 })
 
-app.get('/v1/zillow/houses/', (request, response) => {
+app.get('/v1/zillow/houses', (request, response) => {
 
     const keys = lo.keys(request.query)
     const values = lo.values(request.query)
@@ -59,17 +59,17 @@ app.get('/v1/zillow/houses/', (request, response) => {
 
     if(keys.length >= 2){
         console.log(`too many args`)
-        response.sendStatus(400)
+        response.sendStatus(404)
         return
     }
-    if(keys.length == 1 && keys[0] != 'location'){
-        response.sendStatus(400)
+    if(keys.length == 1 && keys[0] != 'city'){
+        response.sendStatus(404)
         console.log('mispelled param')
         return
     }
 
     if(keys.length === 0 || !cities.includes(searchCity)){
-        response.send([])
+        response.status(200).send([])
         console.log(`city not found or no args`)
         return
     }
@@ -77,11 +77,42 @@ app.get('/v1/zillow/houses/', (request, response) => {
     
     var resultHouses = lo.filter(houses, (house) =>{return house.city === searchCity})
 
-    response.send(resultHouses)
+    response.status(200).send(resultHouses)
 
 
 })
 
+app.get('/v1/zillow/prices', (request, response) => {
+
+    var keys = lo.keys(request.query) 
+    var values = lo.values(request.query) 
+
+    if(keys.length != 1){
+        console.log("One and only one param needed")
+        response.sendStatus(404)
+        return
+    }
+
+    if(keys[0] != 'usd'){
+        console.log('Param must be "usd"')
+        response.sendStatus(404)
+        return
+    }
+    
+    if(!isValidNumber(values[0])){
+        console.log('The price must be a number and > 0')
+        response.sendStatus(404)
+        return
+    }
+
+    const price = values[0]
+    const housesUnderPrice = lo.filter(houses, (house) => {return house.price <= price} )
+
+    response.status(200).send(housesUnderPrice)
+
+
+
+})
 
 function validateKeys(keys, expectedKeys) {
 
@@ -96,31 +127,62 @@ function validateKeys(keys, expectedKeys) {
     return isValid && keys.length === expectedKeys.length
 }
 // Check for if all are valid ints
+// Refactored hard
 function allValidIntegers(values){
     isValid = true;
     values.forEach(v =>{
 
-        // See if the each character is a number or not
-        var testVal = v.split("")
-        var foundNonInt = lo.some(testVal, s => !lo.isInteger(lo.parseInt(s)))
-        if(foundNonInt){
-            console.log("Param value is not an int ")
+        var number = Number(v)
+  
+        if(Number.isNaN(number)){
+            console.log("Param value is not a number ")
             isValid = false
             return
         }
-        var val = lo.parseInt(v)
-    
-        // >=0 because negative sqft or bathrooms makes no sense 
-        console.log(val)
-        if(!lo.isInteger(val) || val < 0 || lo.isNaN(val)){
-            console.log("Not a integer")
-            isValid = false;
+
+        if(!Number.isInteger(number) || number < 0){
+            console.log("Param value is not an integer")
+            isValid = false
+            return
         }
+
+        // // See if the each character is a number or not
+        // var testVal = v.split("")
+        // var foundNonInt = lo.some(testVal, s => !lo.isInteger(lo.parseInt(s)))
+        // if(foundNonInt){
+        //     console.log("Param value is not an int ")
+        //     isValid = false
+        //     return
+        // }
+        // var val = lo.parseInt(v)
+    
+        // // >=0 because negative sqft or bathrooms or price makes no sense 
+        // if(!lo.isInteger(val) || val < 0 || lo.isNaN(val)){
+        //     console.log("Not a integer or under 0")
+        //     isValid = false;
+        // }
     })
     return isValid;
 
 }
 
-console.log("creating a new server at port 3000")
-app.listen(3000)
+function isValidNumber(value){
+   return !Number.isNaN(Number(value)) || value < 0
+
+}
+
+// Check to make sure about ports
+if(process.argv.length != 3){
+    console.log("Please provide the port number")
+    return
+}
+
+const port = process.argv[2]
+if(!allValidIntegers([port])){
+    console.log("Port number must be an integer")
+    return
+}
+
+console.log(`creating a new server at port localhost:${port}`)
+app.listen(port)
 
