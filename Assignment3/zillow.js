@@ -23,7 +23,6 @@ app.get('/v1/zillow/zestimate', (request, response) => {
     // i.e you can pass in 2 sqft and it will only take the first 
     const keys = lo.keys(request.query)
     var values = lo.values(request.query)
-    console.log(values)
 
     const expectedKeys = ['sqft', 'bed', 'bath']
    
@@ -62,17 +61,25 @@ app.get('/v1/zillow/houses', (request, response) => {
         response.sendStatus(404)
         return
     }
+    
+    //THIS PART CORRESPONDS WITH THE DOC, BUT DOES NOT CORRESPOND WITH THE VIDEO... SO COMMENT THIS AND UNCOMMENT THE FOLLOWING COMMENTED BLOCK IF YOU WANT IT TO WORK WITH THE DOC
     if(keys.length == 1 && keys[0] != 'city'){
         response.sendStatus(404)
         console.log('mispelled param')
         return
-    }
+    }  
+    // THIS PART IS IF YOU WANTED US TO RETURN ALL OF THE HOUSES LIKE IN THE VIDEO'S DOC, BUT AS I HAVE IT, IT MATCHES THE DOCUMENT
+    // if(keys.length === 0){
+    //     response.status(200).send(houses)
+    //     return
+    // }
+    // if(keys[0] != 'city'){
+    //     response.sendStatus(404)
+    //     console.log('mispelled param')
+    //     return
+    // }
 
-    if(keys.length === 0 || !cities.includes(searchCity)){
-        response.status(200).send([])
-        console.log(`city not found or no args`)
-        return
-    }
+
 
     
     var resultHouses = lo.filter(houses, (house) =>{return house.city === searchCity})
@@ -95,6 +102,8 @@ app.get('/v1/zillow/prices', (request, response) => {
 
     if(keys[0] != 'usd'){
         console.log('Param must be "usd"')
+        // FOR MATCHING THE VIDEO, THE FOLLOWING COMMENTED CODE WOULD REPLACE response.sendStatus(404)
+        // response.status(404).send('usd param required')
         response.sendStatus(404)
         return
     }
